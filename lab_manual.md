@@ -143,3 +143,30 @@ ansible_ssh_private_key_file=~/.ssh/id_ed25519
 The infrastructure cluster communication is verified using the Ansible ad-hoc native ping module:
 
 ansible targets -i hosts -m ping
+
+## 9. Centralized Logging Infrastructure (rsyslog)
+
+### 9.1 Receiver Configuration (Execution Path: node3)
+Node 3 is designated as the centralized log repository, listening on standard port 514 for both UDP and TCP traffic. Logs are dynamically separated into structured directories based on the originating host.
+
+**Configuration Baseline (/etc/rsyslog.conf):**
+* UDP/TCP Modules Enabled: imudp, imtcp
+* Listening Port: 514
+* Storage Template Rule (Appended to bottom of file):
+  $template RemoteLogs,"/var/log/nodes/%HOSTNAME%/%PROGRAMNAME%.log"
+  *.* ?RemoteLogs
+  & stop
+
+**Service Management:**
+sudo cp /etc/rsyslog.conf /etc/rsyslog.conf.20260517.bak
+sudo systemctl restart rsyslog
+sudo ss -tulnp | grep 514
+
+### 9.2 Client Shipper Configuration (Execution Path: node1 & node2)
+To forward system events to the centralized receiver, endpoints deploy an explicit forwarding policy within the local drop-in directory structure.
+
+**Configuration Baseline (/etc/rsyslog.d/60-remotelog.conf):**
+*.* @@192.168.26.133:514
+
+**Service Lifecycle Activation:**
+sudo systemctl restart rsyslog
