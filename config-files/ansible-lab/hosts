@@ -1,0 +1,9 @@
+[targets]
+node2 ansible_host=192.168.26.132
+node3 ansible_host=192.168.26.133
+
+[targets:vars]
+ansible_user=kwood
+ansible_ssh_private_key_file=~/.ssh/id_ed25519
+ansible_become_method=sudo
+ansible_become_ask_pass=True

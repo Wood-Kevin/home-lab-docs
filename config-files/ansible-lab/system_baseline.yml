@@ -1,0 +1,21 @@
+---
+- name: configure system baseline configurations
+  hosts: targets
+  become: true
+  tasks:
+
+    - name: ensure apt cache is updated and system packages are current 
+      apt:
+        update_cache: yes
+        upgrade: dist
+        cache_valid_time: 3600
+
+    - name: install standard system administration tool utilities 
+      apt:
+        name:
+          - curl 
+          - git 
+          - net-tools
+          - htop
+        state: present 
+
