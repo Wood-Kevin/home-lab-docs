@@ -1,0 +1,11 @@
+# Ignore macOS system overhead
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Explicitly block hidden SSH, keys, or credentials
+.ssh/
+*secret*
+*.key
+*.pem
+*.id_ed25519
